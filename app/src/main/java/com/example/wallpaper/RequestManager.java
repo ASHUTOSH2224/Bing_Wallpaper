@@ -19,7 +19,7 @@ import retrofit2.http.Query;
 public class RequestManager {
     Context context;
     Retrofit retrofit =new Retrofit.Builder()
-            .baseUrl("https://api.pexels.com.v1/")
+            .baseUrl("https://api.pexels.com/v1/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
