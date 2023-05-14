@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerClickLi
     private  final CuratedResponseListener listener = new CuratedResponseListener() {
         @Override
         public void onFetch(CuratedApiResponse response, String message) {
+            dialog.dismiss();
             if (response.getPhotos().isEmpty()){
                 Toast.makeText(MainActivity.this, "No Image Found!!", Toast.LENGTH_SHORT).show();
                 return;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerClickLi
 
         @Override
         public void onError(String message) {
+            dialog.dismiss();
             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
 
         }
@@ -90,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerClickLi
 
     @Override
     public void onClick(Photo photo) {
-        Toast.makeText(MainActivity.this, photo.getPhotographer(), Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(MainActivity.this, WallpaperActivity.class)
+                .putExtra("photo", photo));
         
     }
 }

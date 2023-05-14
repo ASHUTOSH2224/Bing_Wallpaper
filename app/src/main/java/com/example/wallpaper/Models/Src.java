@@ -1,6 +1,8 @@
 package com.example.wallpaper.Models;
 
-public class Src {
+import java.io.Serializable;
+
+public class Src implements Serializable {
     public String original;
     public String large2x;
     public String large;

@@ -1,6 +1,8 @@
 package com.example.wallpaper.Models;
 
-public class Photo {
+import java.io.Serializable;
+
+public class Photo implements Serializable {
     public int id;
     public int width;
     public int height;
