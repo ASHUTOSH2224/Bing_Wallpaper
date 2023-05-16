@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -96,5 +97,10 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerClickLi
         startActivity(new Intent(MainActivity.this, WallpaperActivity.class)
                 .putExtra("photo", photo));
         
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 }
