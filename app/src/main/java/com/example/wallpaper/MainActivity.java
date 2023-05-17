@@ -1,6 +1,7 @@
 package com.example.wallpaper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,14 +9,17 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.wallpaper.Adapters.CuratedAdapters;
 import com.example.wallpaper.Listeners.CuratedResponseListener;
 import com.example.wallpaper.Listeners.OnRecyclerClickListener;
+import com.example.wallpaper.Listeners.SearchResponseListener;
 import com.example.wallpaper.Models.CuratedApiResponse;
 import com.example.wallpaper.Models.Photo;
+import com.example.wallpaper.Models.SearchApiResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -101,6 +105,43 @@ public class MainActivity extends AppCompatActivity implements OnRecyclerClickLi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        MenuItem menuItem=menu.findItem(R.id.action_search);
+        SearchView searchView=(SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Type here to search...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                manager.searchCuratedWallpapers(searchResponseListener,"1",query);
+                dialog.show();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
+
+    private final SearchResponseListener searchResponseListener= new SearchResponseListener() {
+        @Override
+        public void onFetch(SearchApiResponse response, String message) {
+            dialog.dismiss();
+            if(response.getPhotos().isEmpty()){
+                Toast.makeText(MainActivity.this,"No image found!!",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            showData(response.getPhotos());
+        }
+
+        @Override
+        public void onError(String message) {
+            dialog.dismiss();
+            Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
+
+        }
+    };
 }

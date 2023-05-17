@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.wallpaper.Listeners.CuratedResponseListener;
+import com.example.wallpaper.Listeners.SearchResponseListener;
 import com.example.wallpaper.Models.CuratedApiResponse;
 import com.example.wallpaper.Models.SearchApiResponse;
 
@@ -49,18 +50,18 @@ public class RequestManager {
         });
     }
 
-    public void searchCuratedWallpapers(SearchResponseListener listener, String page,String query){
-        CallWallpaperSearchListener callwallpaperListSearch=retrofit.create(CallWallpaperListSearch.class);
-        Call<SearchApiResponse> call=callwallpaperListSearch.searchWallpapers(query,page, "20");
+    public void searchCuratedWallpapers(SearchResponseListener listener, String page, String query) {
+        CallWallpaperListSearch callWallpaperListSearch = retrofit.create(CallWallpaperListSearch.class);
+        Call<SearchApiResponse> call = callWallpaperListSearch.searchWallpapers(query, page, "20");
 
         call.enqueue(new Callback<SearchApiResponse>() {
             @Override
             public void onResponse(Call<SearchApiResponse> call, Response<SearchApiResponse> response) {
-                if (!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Toast.makeText(context, "An Error Occured!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                listener.onFetch(response.body(),response.message());
+                listener.onFetch(response.body(), response.message());
             }
 
             @Override
@@ -68,7 +69,7 @@ public class RequestManager {
                 listener.onError(t.getMessage());
             }
         });
-
+    }
     private interface CallWallpaperList{
         @Headers({
                 "Accept: application/json",
