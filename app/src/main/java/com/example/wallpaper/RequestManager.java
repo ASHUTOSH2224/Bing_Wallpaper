@@ -4,7 +4,9 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.wallpaper.Listeners.CuratedResponseListener;
+import com.example.wallpaper.Listeners.SearchResponseListener;
 import com.example.wallpaper.Models.CuratedApiResponse;
+import com.example.wallpaper.Models.SearchApiResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +50,26 @@ public class RequestManager {
         });
     }
 
+    public void searchCuratedWallpapers(SearchResponseListener listener, String page, String query) {
+        CallWallpaperListSearch callWallpaperListSearch = retrofit.create(CallWallpaperListSearch.class);
+        Call<SearchApiResponse> call = callWallpaperListSearch.searchWallpapers(query, page, "20");
+
+        call.enqueue(new Callback<SearchApiResponse>() {
+            @Override
+            public void onResponse(Call<SearchApiResponse> call, Response<SearchApiResponse> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(context, "An Error Occured!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                listener.onFetch(response.body(), response.message());
+            }
+
+            @Override
+            public void onFailure(Call<SearchApiResponse> call, Throwable t) {
+                listener.onError(t.getMessage());
+            }
+        });
+    }
     private interface CallWallpaperList{
         @Headers({
                 "Accept: application/json",
@@ -55,6 +77,19 @@ public class RequestManager {
         })
         @GET("curated/")
         Call<CuratedApiResponse> getWallpapers(
+                @Query("page")String page,
+                @Query("per_page")String per_page
+        );
+    }
+
+    private interface CallWallpaperListSearch{
+        @Headers({
+                "Accept: application/json",
+                "Authorization: QAcUbrzEVB1ZeHoCCQtGZj0RqNiTGSFU8BCdTygkGEYZF1oPWwfwVUr9"
+        })
+        @GET("search")
+        Call<SearchApiResponse> searchWallpapers(
+                @Query("query") String query,
                 @Query("page")String page,
                 @Query("per_page")String per_page
         );
